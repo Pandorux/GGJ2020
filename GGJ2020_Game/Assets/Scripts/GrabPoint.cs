@@ -1,15 +1,31 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Piece))]
 public class GrabPoint : Child
 {
     GameObject pot;
-    public boolean canGrab
+    public bool canGrab
     {
         get;
         private set;
+    }
+
+    public event OnGrabPointEventHandler onGrab;
+    public void onGrabby(OnGrabPointEventArgs e)
+    {
+        OnGrabPointEventHandler handler = onGrab;
+        if (onGrab != null)
+            handler(this, e);
+    }
+
+    public event OnGrabPointEventHandler onNotGrab;
+    public void onNotGrabby(OnGrabPointEventArgs e)
+    {
+        OnGrabPointEventHandler handler = onNotGrab;
+        if (onNotGrab != null)
+            handler(this, e);
     }
 
     /// <summary>
@@ -18,7 +34,8 @@ public class GrabPoint : Child
     /// </summary>
     void Start()
     {
-        godObject = GetAncestor(2);
+        // TODO: Not sure if I need this yet
+        pot = GetAncestor(2);
     }
 
     /// <summary>
@@ -41,4 +58,10 @@ public class GrabPoint : Child
         }
     }
 
+}
+
+public delegate void OnGrabPointEventHandler(object sender, OnGrabPointEventArgs e);
+public class OnGrabPointEventArgs : EventArgs
+{
+    public GrabPoint grabPoint;
 }

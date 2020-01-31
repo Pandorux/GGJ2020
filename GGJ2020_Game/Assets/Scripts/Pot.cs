@@ -7,8 +7,8 @@ public class Pot : MonoBehaviour
     [SerializeField]
     private List<Piece> pieces;
     
-    public boolean isClimbing;
-    public boolean canClimb;
+    public bool isClimbing;
+    public bool canClimb;
 
     /// <summary>
     /// Start is called on the frame when a script is enabled just before

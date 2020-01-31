@@ -26,25 +26,20 @@ public abstract class Child : MonoBehaviour
 
     public GameObject GetAncestor(int steps)
     {
-        GameObject ancestor = parent;
+        Child ancestor = this;
 
-        if(steps > 1)
+        for(int i = 0; i < steps; i++)
         {
-            for(int i = 0; i < steps - 1; i++)
+            if(ancestor.parent.GetComponent<Child>())
             {
-                if(ancestor.parent.GetComponent<Child>())
-                {
-                    ancestor = ancestor.parent.GameObject;
-                }
-                else
-                {
-                    ancestor = null;
-                    break;
-                }
+                ancestor = ancestor?.parent.GetComponent<Child>();
             }
+
+            ancestor = null;
+            break;
         }
 
-        return ancestor;
+        return ancestor?.gameObject;
     }
 
 }
