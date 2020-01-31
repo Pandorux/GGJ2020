@@ -15,11 +15,13 @@ public abstract class Child : MonoBehaviour
     public void Unparent()
     {
         transform.SetParent(null);
+        parent = null;
     }
 
     public void ChangeParent(Transform parentTransform) 
     {
         transform.SetParent(parentTransform);
+        parent = parentTransform.gameObject;
     }
 
 }

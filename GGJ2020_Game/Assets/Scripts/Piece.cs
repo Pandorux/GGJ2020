@@ -6,5 +6,5 @@ using UnityEngine;
 public class Piece : Child
 {
     [SerializeField]
-    private Piece[] pieces;
+    private Piece[] grabPoints;
 }

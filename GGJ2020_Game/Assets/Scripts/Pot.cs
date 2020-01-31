@@ -5,20 +5,20 @@ using UnityEngine;
 public class Pot : MonoBehaviour
 {
     [SerializeField]
-    private Piece[] pieces;
+    private List<Piece> pieces;
     
     public void AddPiece(Piece newPiece)
     {
         GameObject newPieceObj = newPiece.gameObject;
 
         // Set Pot as Parent
-        newPieceObj.transform.SetParent(transform);
         newPieceObj.GetComponent<Child>().ChangeParent(transform);
 
         // Make sure piece is in origin
         newPieceObj.transform.localPosition = Vector3.zero;
         newPieceObj.transform.localRotation = Quaternion.identity;
-        
+
+        pieces.Add(newPiece);
     }
 
     #region Testing
