@@ -199,7 +199,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 0}
-  pieces: []
+  grabPoints: []
 --- !u!4 &217363925
 Transform:
   m_ObjectHideFlags: 0
@@ -710,7 +710,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 54658054}
-  pieces: []
+  grabPoints: []
 --- !u!1 &1438852423
 GameObject:
   m_ObjectHideFlags: 0
@@ -833,7 +833,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 0}
-  pieces: []
+  grabPoints: []
 --- !u!4 &1544783136
 Transform:
   m_ObjectHideFlags: 0
@@ -879,7 +879,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 0}
-  pieces: []
+  grabPoints: []
 --- !u!4 &2013691618
 Transform:
   m_ObjectHideFlags: 0
@@ -895,3 +895,91 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1444745024201988387
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4728315554349844495, guid: 3ec14dba82fc3fa4b9bb894e0f1a7188,
+        type: 3}
+      propertyPath: m_Name
+      value: GrabPoint
+      objectReference: {fileID: 0}
+    - target: {fileID: 8150729604869596553, guid: 3ec14dba82fc3fa4b9bb894e0f1a7188,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.26797217
+      objectReference: {fileID: 0}
+    - target: {fileID: 8150729604869596553, guid: 3ec14dba82fc3fa4b9bb894e0f1a7188,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.078125
+      objectReference: {fileID: 0}
+    - target: {fileID: 8150729604869596553, guid: 3ec14dba82fc3fa4b9bb894e0f1a7188,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 6.0265694
+      objectReference: {fileID: 0}
+    - target: {fileID: 8150729604869596553, guid: 3ec14dba82fc3fa4b9bb894e0f1a7188,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8150729604869596553, guid: 3ec14dba82fc3fa4b9bb894e0f1a7188,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8150729604869596553, guid: 3ec14dba82fc3fa4b9bb894e0f1a7188,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8150729604869596553, guid: 3ec14dba82fc3fa4b9bb894e0f1a7188,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8150729604869596553, guid: 3ec14dba82fc3fa4b9bb894e0f1a7188,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8150729604869596553, guid: 3ec14dba82fc3fa4b9bb894e0f1a7188,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8150729604869596553, guid: 3ec14dba82fc3fa4b9bb894e0f1a7188,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8150729604869596553, guid: 3ec14dba82fc3fa4b9bb894e0f1a7188,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3ec14dba82fc3fa4b9bb894e0f1a7188, type: 3}
+--- !u!1 &1444745024201988388 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4728315554349844495, guid: 3ec14dba82fc3fa4b9bb894e0f1a7188,
+    type: 3}
+  m_PrefabInstance: {fileID: 1444745024201988387}
+  m_PrefabAsset: {fileID: 0}
+--- !u!135 &1444745024201988389
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444745024201988388}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}

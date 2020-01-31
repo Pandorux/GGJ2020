@@ -7,6 +7,22 @@ public class Pot : MonoBehaviour
     [SerializeField]
     private List<Piece> pieces;
     
+    public boolean isClimbing;
+    public boolean canClimb;
+
+    /// <summary>
+    /// Start is called on the frame when a script is enabled just before
+    /// any of the Update methods is called the first time.
+    /// </summary>
+    void Start()
+    {
+        // Make sure all pieces point to this as the parent 
+        for(int i = 0; i < pieces.Count; i++)
+        {
+            pieces[i].GetComponent<Child>().ChangeParent(transform);
+        }
+    }
+
     public void AddPiece(Piece newPiece)
     {
         GameObject newPieceObj = newPiece.gameObject;
