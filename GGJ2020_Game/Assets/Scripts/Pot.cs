@@ -47,6 +47,47 @@ public class Pot : MonoBehaviour
         pieces.Add(newPiece);
     }
 
+    public void GetGrabPointExtents(ref GrabPoint grabPoint00, ref GrabPoint grabPoint01)
+    {
+        List<GrabPoint> grabPoints = GetAllGrabPoints();
+        float longestDistance = 0.0f;
+
+        for(int i = 0; i < grabPoints.Count; i++)
+        {
+            for(int j = i; j < grabPoints.Count; j++)
+            {
+                Vector3 a = grabPoints[i].gameObject.transform.position;
+                Vector3 b = grabPoints[j].gameObject.transform.position;
+
+                float distance = Vector3.Distance(a, b);
+
+                if(distance > longestDistance)
+                {
+                    longestDistance = distance;
+
+                    grabPoint00 = grabPoints[i];
+                    grabPoint01 = grabPoints[j];
+                }
+
+                #if UNITY_EDITOR
+                    Debug.Log($"Compared {grabPoints[i].gameObject.name} and {grabPoints[j].gameObject.name}");
+                #endif
+            }
+        }
+    }
+
+    public List<GrabPoint> GetAllGrabPoints()
+    {
+        List<GrabPoint> grabPoints = new List<GrabPoint>();
+
+        for(int i = 0; i < pieces.Count; i++)
+        {
+            grabPoints.Add(pieces[i].GetGrabPoints());
+        }
+
+        return grabPoints();
+    }
+
     #region Testing
 
     [Header("Testing Variables")]
@@ -85,6 +126,15 @@ public class Pot : MonoBehaviour
                     Debug.Log($"{gameObject.name} can climb!!");
                 else
                     Debug.LogError($"{gameObject.name} cannot climb!!");
+            }
+
+            else if (Input.GetKeyDown(KeyCode.G))
+            {
+                Grabpoint gp1 = new GrabPoint();
+                Grabpoint gp2 = new GrabPoint();
+                GetGrabPointExtents(ref gp1, ref gp2);
+
+                Debug.Log($"The extents are {gp1.gameObject.name} and {gp2.gameObject.name}");
             }
         #endif
     }

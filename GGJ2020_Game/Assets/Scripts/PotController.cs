@@ -15,10 +15,10 @@ public class PotController : MonoBehaviour
     {
         get
         {
-            if(rigidBody.velocity.y > 0.25)
+            if(rb.velocity.y > 0.25)
                 return false;
 
-            if(rigidBody.velocity.y < -0.25)
+            if(rb.velocity.y < -0.25)
                 return false;
 
             return true;
@@ -34,7 +34,7 @@ public class PotController : MonoBehaviour
                 return true;
 
             if(leftGrabPoint?.canGrab)
-                return false;
+                return true;
 
             return false;
         }
@@ -57,14 +57,14 @@ public class PotController : MonoBehaviour
         }
         else if(canClimb)
         {
-            if(Input.GetKeyDown(Keycode.Mouse0) && rightGrabPoint.canGrab)
+            if(Input.GetKeyDown(KeyCode.Mouse0) && rightGrabPoint.canGrab)
             {
                 rightGrabPoint.isGrabbing = !rightGrabPoint.isGrabbing;
 
                 // Shenanigans with left grab point
             }
 
-            if(Input.GetKeyDown(Keycode.Mouse1) && leftGrabPoint.canGrab)
+            if(Input.GetKeyDown(KeyCode.Mouse1) && leftGrabPoint.canGrab)
             {
                 leftGrabPoint.isGrabbing = !leftGrabPoint.isGrabbing;
 
