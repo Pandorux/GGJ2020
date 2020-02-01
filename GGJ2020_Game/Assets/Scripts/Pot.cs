@@ -5,9 +5,7 @@ using UnityEngine;
 public class Pot : MonoBehaviour
 {
     [SerializeField]
-    private List<Piece> pieces;
-    
-    public bool isClimbing;
+    private List<Piece> pieces;   
     public bool canClimb
     {
         get

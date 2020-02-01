@@ -6,6 +6,8 @@ using UnityEngine;
 public class GrabPoint : Child
 {
     GameObject pot;
+
+    public bool isGrabbing;
     public bool canGrab
     {
         get;
