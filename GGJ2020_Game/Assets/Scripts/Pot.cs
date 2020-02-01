@@ -36,6 +36,7 @@ public class Pot : MonoBehaviour
 
         controller.GetComponent<PotController>();
         GetGrabPointExtents(ref controller.leftGrabPoint, ref controller.rightGrabPoint);
+        DeactivateUnusedGrabPoints(); 
     }
 
     public void AddPiece(Piece newPiece)
@@ -52,6 +53,7 @@ public class Pot : MonoBehaviour
         // Add new piece, and reasign grab points
         pieces.Add(newPiece);
         GetGrabPointExtents(ref controller.leftGrabPoint, ref controller.rightGrabPoint);
+        DeactivateUnusedGrabPoints(); 
     }
 
     public void GetGrabPointExtents(ref GrabPoint grabPoint00, ref GrabPoint grabPoint01)
@@ -79,6 +81,28 @@ public class Pot : MonoBehaviour
                 #if UNITY_EDITOR
                     Debug.Log($"Compared {grabPoints[i].gameObject.name} and {grabPoints[j].gameObject.name}");
                 #endif
+            }
+        }
+    }
+
+
+    // TODO:  Potential cause of poor performance
+    /// <summary>
+    /// Deactivates all grab points that are not currently being used for climbing movement.
+    /// </summary>
+    public void DeactivateUnusedGrabPoints()
+    {
+        List<GrabPoint> grabPoints = GetAllGrabPoints();
+
+        for(int i = 0; i < grabPoints.Count; i++)
+        {
+            if(grabPoints[i] != controller.leftGrabPoint && grabPoints[i] != controller.rightGrabPoint)
+            {
+                grabPoints[i].gameObject.SetActive(false);
+            }
+            else
+            {
+                grabPoints[i].gameObject.SetActive(true);
             }
         }
     }
