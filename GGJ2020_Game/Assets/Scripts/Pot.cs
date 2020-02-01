@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(PotController))]
 public class Pot : MonoBehaviour
 {
+    public PotController controller; 
     [SerializeField]
     private List<Piece> pieces;   
     public bool canClimb
@@ -31,6 +33,9 @@ public class Pot : MonoBehaviour
         {
             pieces[i].GetComponent<Child>().ChangeParent(transform);
         }
+
+        controller.GetComponent<PotController>();
+        GetGrabPointExtents(ref controller.leftGrabPoint, ref controller.rightGrabPoint);
     }
 
     public void AddPiece(Piece newPiece)
@@ -44,7 +49,9 @@ public class Pot : MonoBehaviour
         newPieceObj.transform.localPosition = Vector3.zero;
         newPieceObj.transform.localRotation = Quaternion.identity;
 
+        // Add new piece, and reasign grab points
         pieces.Add(newPiece);
+        GetGrabPointExtents(ref controller.leftGrabPoint, ref controller.rightGrabPoint);
     }
 
     public void GetGrabPointExtents(ref GrabPoint grabPoint00, ref GrabPoint grabPoint01)
@@ -54,7 +61,7 @@ public class Pot : MonoBehaviour
 
         for(int i = 0; i < grabPoints.Count; i++)
         {
-            for(int j = i; j < grabPoints.Count; j++)
+            for(int j = i + 1; j < grabPoints.Count; j++)
             {
                 Vector3 a = grabPoints[i].gameObject.transform.position;
                 Vector3 b = grabPoints[j].gameObject.transform.position;
@@ -82,10 +89,10 @@ public class Pot : MonoBehaviour
 
         for(int i = 0; i < pieces.Count; i++)
         {
-            grabPoints.Add(pieces[i].GetGrabPoints());
+            grabPoints.AddRange(pieces[i].GetGrabPoints());
         }
 
-        return grabPoints();
+        return grabPoints;
     }
 
     #region Testing
@@ -130,8 +137,8 @@ public class Pot : MonoBehaviour
 
             else if (Input.GetKeyDown(KeyCode.G))
             {
-                Grabpoint gp1 = new GrabPoint();
-                Grabpoint gp2 = new GrabPoint();
+                GrabPoint gp1 = new GrabPoint();
+                GrabPoint gp2 = new GrabPoint();
                 GetGrabPointExtents(ref gp1, ref gp2);
 
                 Debug.Log($"The extents are {gp1.gameObject.name} and {gp2.gameObject.name}");

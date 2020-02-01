@@ -9,8 +9,8 @@ public class PotController : MonoBehaviour
     private Rigidbody rb;
 
     protected Pot pot;
-    protected GrabPoint rightGrabPoint;
-    protected GrabPoint leftGrabPoint;
+    public GrabPoint rightGrabPoint;
+    public GrabPoint leftGrabPoint;
     public bool isOnGround
     {
         get
@@ -30,10 +30,10 @@ public class PotController : MonoBehaviour
     {
         get
         {
-            if(rightGrabPoint?.canGrab)
+            if(rightGrabPoint.canGrab)
                 return true;
 
-            if(leftGrabPoint?.canGrab)
+            if(leftGrabPoint.canGrab)
                 return true;
 
             return false;
