@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(PotController))]
 public class Pot : MonoBehaviour
 {
+    public PotController controller; 
     [SerializeField]
-    private List<Piece> pieces;
-    
-    public bool isClimbing;
+    private List<Piece> pieces;   
     public bool canClimb
     {
         get
@@ -33,6 +33,10 @@ public class Pot : MonoBehaviour
         {
             pieces[i].GetComponent<Child>().ChangeParent(transform);
         }
+
+        controller.GetComponent<PotController>();
+        GetGrabPointExtents(ref controller.leftGrabPoint, ref controller.rightGrabPoint);
+        DeactivateUnusedGrabPoints(); 
     }
 
     public void AddPiece(Piece newPiece)
@@ -46,7 +50,73 @@ public class Pot : MonoBehaviour
         newPieceObj.transform.localPosition = Vector3.zero;
         newPieceObj.transform.localRotation = Quaternion.identity;
 
+        // Add new piece, and reasign grab points
         pieces.Add(newPiece);
+        GetGrabPointExtents(ref controller.leftGrabPoint, ref controller.rightGrabPoint);
+        DeactivateUnusedGrabPoints(); 
+    }
+
+    public void GetGrabPointExtents(ref GrabPoint grabPoint00, ref GrabPoint grabPoint01)
+    {
+        List<GrabPoint> grabPoints = GetAllGrabPoints();
+        float longestDistance = 0.0f;
+
+        for(int i = 0; i < grabPoints.Count; i++)
+        {
+            for(int j = i + 1; j < grabPoints.Count; j++)
+            {
+                Vector3 a = grabPoints[i].gameObject.transform.position;
+                Vector3 b = grabPoints[j].gameObject.transform.position;
+
+                float distance = Vector3.Distance(a, b);
+
+                if(distance > longestDistance)
+                {
+                    longestDistance = distance;
+
+                    grabPoint00 = grabPoints[i];
+                    grabPoint01 = grabPoints[j];
+                }
+
+                #if UNITY_EDITOR
+                    Debug.Log($"Compared {grabPoints[i].gameObject.name} and {grabPoints[j].gameObject.name}");
+                #endif
+            }
+        }
+    }
+
+
+    // TODO:  Potential cause of poor performance
+    /// <summary>
+    /// Deactivates all grab points that are not currently being used for climbing movement.
+    /// </summary>
+    public void DeactivateUnusedGrabPoints()
+    {
+        List<GrabPoint> grabPoints = GetAllGrabPoints();
+
+        for(int i = 0; i < grabPoints.Count; i++)
+        {
+            if(grabPoints[i] != controller.leftGrabPoint && grabPoints[i] != controller.rightGrabPoint)
+            {
+                grabPoints[i].gameObject.SetActive(false);
+            }
+            else
+            {
+                grabPoints[i].gameObject.SetActive(true);
+            }
+        }
+    }
+
+    public List<GrabPoint> GetAllGrabPoints()
+    {
+        List<GrabPoint> grabPoints = new List<GrabPoint>();
+
+        for(int i = 0; i < pieces.Count; i++)
+        {
+            grabPoints.AddRange(pieces[i].GetGrabPoints());
+        }
+
+        return grabPoints;
     }
 
     #region Testing
@@ -87,6 +157,15 @@ public class Pot : MonoBehaviour
                     Debug.Log($"{gameObject.name} can climb!!");
                 else
                     Debug.LogError($"{gameObject.name} cannot climb!!");
+            }
+
+            else if (Input.GetKeyDown(KeyCode.G))
+            {
+                GrabPoint gp1 = new GrabPoint();
+                GrabPoint gp2 = new GrabPoint();
+                GetGrabPointExtents(ref gp1, ref gp2);
+
+                Debug.Log($"The extents are {gp1.gameObject.name} and {gp2.gameObject.name}");
             }
         #endif
     }

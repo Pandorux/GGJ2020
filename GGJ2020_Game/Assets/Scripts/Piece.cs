@@ -56,5 +56,8 @@ public class Piece : Child
         #endif
     }
 
-    
+    public List<GrabPoint> GetGrabPoints()
+    {
+        return grabPoints;
+    }
 }
