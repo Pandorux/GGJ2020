@@ -5,8 +5,10 @@ using UnityEngine;
 public class PotController : MonoBehaviour
 {
     public float speed = 5;
+    public Text countText;
 
     private Rigidbody rb;
+    private int count;
 
     // Start is called before the first frame update
     void Start()
@@ -25,11 +27,13 @@ public class PotController : MonoBehaviour
         rb.AddForce(movement * speed);
     }
 
-    //void OnTriggerEnter(Collider other) // when you hit the things, they deactivate
-    //{
-    //    if (other.gameObject.CompareTag("Pick Up"))
-    //    {
-    //        other.gameObject.SetActive(false);
-    //    }
-    //}
+    void OnTriggerEnter(Collider other) // when you hit the things, they deactivate
+    {
+        if (other.gameObject.CompareTag("Gold"))
+        {
+            other.gameObject.SetActive(false);
+            count = count + 1;
+            SetCountText();
+        }
+    }
 }
