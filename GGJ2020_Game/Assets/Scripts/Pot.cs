@@ -2,23 +2,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PotController))]
 public class Pot : MonoBehaviour
 {
-    public PotController controller; 
-    [SerializeField]
-    private List<Piece> pieces;   
+
+    public float speed = 5;
+    public bool canPickUp = false;
+
+    private Rigidbody rb;
+    private int goldCount;
+
+    public PieceEnum pieceNumber;
+
+    private List<Piece> pieces = new List<Piece>();
+
+    public GrabPoint rightGrabPoint;
+    public GrabPoint leftGrabPoint;
+    public bool isClimbing;
     public bool canClimb
     {
         get
         {
-            for(int i = 0; i < pieces.Count; i++)
-            {
-                if(pieces[i].hasClimbyGrabPoints)
-                    return true;
-            }
+            if (rightGrabPoint.canGrab)
+                return true;
+
+            if (leftGrabPoint.canGrab)
+                return true;
 
             return false;
+        }
+
+    }
+
+    public bool isOnGround
+    {
+        get
+        {
+            if (rb.velocity.y > 0.25)
+                return false;
+
+            if (rb.velocity.y < -0.25)
+                return false;
+
+            return true;
         }
     }
 
@@ -28,15 +53,54 @@ public class Pot : MonoBehaviour
     /// </summary>
     void Start()
     {
+        rb = GetComponent<Rigidbody>(); // talk to the rigid body
+
         // Make sure all pieces point to this as the parent 
-        for(int i = 0; i < pieces.Count; i++)
+        for (int i = 0; i < pieces.Count; i++)
         {
             pieces[i].GetComponent<Child>().ChangeParent(transform);
         }
 
-        controller.GetComponent<PotController>();
-        GetGrabPointExtents(ref controller.leftGrabPoint, ref controller.rightGrabPoint);
+        GetGrabPointExtents(ref leftGrabPoint, ref rightGrabPoint);
         DeactivateUnusedGrabPoints(); 
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (isOnGround)
+        {
+            GroundMovement();
+        }
+        else if (canClimb)
+        {
+            if (Input.GetKeyDown(KeyCode.Mouse0) && rightGrabPoint.canGrab)
+            {
+                rightGrabPoint.isGrabbing = !rightGrabPoint.isGrabbing;
+
+                // Shenanigans with right grab point
+            }
+
+            if (Input.GetKeyDown(KeyCode.Mouse1) && leftGrabPoint.canGrab)
+            {
+                leftGrabPoint.isGrabbing = !leftGrabPoint.isGrabbing;
+
+                // Shenanigans with left grab point
+            }
+
+            isClimbing = rightGrabPoint.isGrabbing || leftGrabPoint.isGrabbing ?
+                true : false;
+        }
+    }
+
+    protected void GroundMovement()
+    {
+        float moveHorizontal = Input.GetAxis("Horizontal"); // move n shit
+        float moveVertical = Input.GetAxis("Vertical");
+
+        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+
+        rb.AddForce(movement * speed);
     }
 
     public void AddPiece(Piece newPiece)
@@ -52,7 +116,7 @@ public class Pot : MonoBehaviour
 
         // Add new piece, and reasign grab points
         pieces.Add(newPiece);
-        GetGrabPointExtents(ref controller.leftGrabPoint, ref controller.rightGrabPoint);
+        GetGrabPointExtents(ref leftGrabPoint, ref rightGrabPoint);
         DeactivateUnusedGrabPoints(); 
     }
 
@@ -85,6 +149,30 @@ public class Pot : MonoBehaviour
         }
     }
 
+    void OnTriggerEnter(Collider other)
+    {
+
+        if (other.gameObject.CompareTag("Gold")) // **GOLD** when you hit gold, they deactivate and add 1 to your count
+        {
+            other.gameObject.SetActive(false);
+            goldCount = goldCount + 1;
+
+
+        }
+
+        // check if you can pick up (is goldCount = 3?)
+        if (goldCount == 3)
+        {
+            //other.gameObject.SetActive(false); //deactivate piece on the floor
+            canPickUp = true;
+
+        }
+
+        //if (other.gameObject.CompareTag("Piece") & canPickUp = true) //AND canPickUp = true         // **PIECES** if the piece you hit is a Piece, check if you can pick up, they deactivate and you reactivate a piece to bowl
+        //{
+        //    AddPiece(other.g)
+        //}
+    }
 
     // TODO:  Potential cause of poor performance
     /// <summary>
@@ -96,7 +184,7 @@ public class Pot : MonoBehaviour
 
         for(int i = 0; i < grabPoints.Count; i++)
         {
-            if(grabPoints[i] != controller.leftGrabPoint && grabPoints[i] != controller.rightGrabPoint)
+            if(grabPoints[i] != leftGrabPoint && grabPoints[i] != rightGrabPoint)
             {
                 grabPoints[i].gameObject.SetActive(false);
             }
@@ -119,57 +207,57 @@ public class Pot : MonoBehaviour
         return grabPoints;
     }
 
-    #region Testing
+    //#region Testing
 
-    [Header("Testing Variables")]
+    //[Header("Testing Variables")]
 
-    public Piece testPiece00;
-    public Piece testPiece01;
-    public Piece testPiece02;
+    //public Piece testPiece00;
+    //public Piece testPiece01;
+    //public Piece testPiece02;
 
-    /// <summary>
-    /// Update is called every frame, if the MonoBehaviour is enabled.
-    /// </summary>
-    void Update()
-    {
-        #if UNITY_EDITOR
-            // Tests Snapping Functionality 
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                AddPiece(testPiece00);
-                testPiece00.gameObject.SetActive(true);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                AddPiece(testPiece01);
-                testPiece01.gameObject.SetActive(true);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                AddPiece(testPiece02);
-                testPiece02.gameObject.SetActive(true);
-            }   
+    ///// <summary>
+    ///// Update is called every frame, if the MonoBehaviour is enabled.
+    ///// </summary>
+    //void Update()
+    //{
+    //    #if UNITY_EDITOR
+    //        // Tests Snapping Functionality 
+    //        if (Input.GetKeyDown(KeyCode.Alpha1))
+    //        {
+    //            AddPiece(testPiece00);
+    //            testPiece00.gameObject.SetActive(true);
+    //        }
+    //        else if (Input.GetKeyDown(KeyCode.Alpha2))
+    //        {
+    //            AddPiece(testPiece01);
+    //            testPiece01.gameObject.SetActive(true);
+    //        }
+    //        else if (Input.GetKeyDown(KeyCode.Alpha3))
+    //        {
+    //            AddPiece(testPiece02);
+    //            testPiece02.gameObject.SetActive(true);
+    //        }   
 
-            // Tests if Climbable Objects can be detected
-            else if (Input.GetKeyDown(KeyCode.C))
-            {
-                if(canClimb)
-                    Debug.Log($"{gameObject.name} can climb!!");
-                else
-                    Debug.LogError($"{gameObject.name} cannot climb!!");
-            }
+    //        // Tests if Climbable Objects can be detected
+    //        else if (Input.GetKeyDown(KeyCode.C))
+    //        {
+    //            if(canClimb)
+    //                Debug.Log($"{gameObject.name} can climb!!");
+    //            else
+    //                Debug.LogError($"{gameObject.name} cannot climb!!");
+    //        }
 
-            else if (Input.GetKeyDown(KeyCode.G))
-            {
-                GrabPoint gp1 = new GrabPoint();
-                GrabPoint gp2 = new GrabPoint();
-                GetGrabPointExtents(ref gp1, ref gp2);
+    //        else if (Input.GetKeyDown(KeyCode.G))
+    //        {
+    //            GrabPoint gp1 = new GrabPoint();
+    //            GrabPoint gp2 = new GrabPoint();
+    //            GetGrabPointExtents(ref gp1, ref gp2);
 
-                Debug.Log($"The extents are {gp1.gameObject.name} and {gp2.gameObject.name}");
-            }
-        #endif
-    }
+    //            Debug.Log($"The extents are {gp1.gameObject.name} and {gp2.gameObject.name}");
+    //        }
+    //    #endif
+    //}
 
-    #endregion
+    //#endregion
 
 }
