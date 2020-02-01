@@ -6,6 +6,7 @@ public class Pot : MonoBehaviour
 {
 
     public float speed = 5;
+    public float rotSpeed = 5;
     public bool canPickUp = false;
     public GameObject climbPivotPrefab;
     private GameObject climbPivot;
@@ -55,6 +56,9 @@ public class Pot : MonoBehaviour
     {
         get
         {
+            if (rb == null)
+                return false;
+
             if (rb.velocity.y > 0.25)
                 return false;
 
@@ -89,14 +93,16 @@ public class Pot : MonoBehaviour
     void Update()
     {
         // WASD
-        if (isOnGround)
+        if (isOnGround && !isClimbing)
         {
+            Debug.Log("Ground Movement Active");
             GroundMovement();
         }
         
         // Wall Swivel Movement
         if(isClimbing)
         {
+            Debug.Log("Wall Movement Active");
             ClimbMovement();
         }
 
@@ -136,16 +142,21 @@ public class Pot : MonoBehaviour
         {
             DestroyClimbPivot();
             rb.constraints = RigidbodyConstraints.FreezeAll;
+            isClimbing = true;
         }
         else if(getNumberOfGrabbingPoints == 1)
         {
-            CreateClimbPivot();
-            rb.constraints = RigidbodyConstraints.None;
+            if(leftGrabPoint.isGrabbing)
+                CreateClimbPivot(leftGrabPoint.gameObject.transform.position);
+            else
+                CreateClimbPivot(rightGrabPoint.gameObject.transform.position);
+
+            isClimbing = true;
         }
         else if(getNumberOfGrabbingPoints == 0)
         {
             DestroyClimbPivot();
-            rb.constraints = RigidbodyConstraints.None;
+            isClimbing = false;
         }
     }
 
@@ -153,14 +164,28 @@ public class Pot : MonoBehaviour
     {
         if(climbPivot != null)
         {
-            if(Input.GetKeyDown(KeyCode.A));
+            if(Input.GetKey(KeyCode.A))
             {
-                climbPivot.GetComponent<RigidBody>().AddTorque(-Vector3.forward, ForceMode.Force);
+                //climbPivot.GetComponent<Rigidbody>().AddTorque(climbPivot.transform.up * 50, ForceMode.Force);
+                climbPivot.GetComponent<Transform>().Rotate(new Vector3(0, 0, rotSpeed) * Time.deltaTime);
             }
 
-            if(Input.GetKeyDown(KeyCode.D));
+            if(Input.GetKey(KeyCode.D))
             {
-                climbPivot.GetComponent<RigidBody>().AddTorque(Vector3.forward, ForceMode.Force);
+                //climbPivot.GetComponent<Rigidbody>().AddTorque(-climbPivot.transform.right * 50, ForceMode.Force);
+                climbPivot.GetComponent<Transform>().Rotate(new Vector3(0, 0, -rotSpeed) * Time.deltaTime);
+            }
+
+            if(Input.GetKey(KeyCode.W))
+            {
+                //climbPivot.GetComponent<Rigidbody>().AddTorque(-climbPivot.transform.right * 50, ForceMode.Force);
+                climbPivot.GetComponent<Transform>().Rotate(new Vector3(0, rotSpeed, 0) * Time.deltaTime);
+            }
+
+            if(Input.GetKey(KeyCode.S))
+            {
+                //climbPivot.GetComponent<Rigidbody>().AddTorque(-climbPivot.transform.right * 50, ForceMode.Force);
+                climbPivot.GetComponent<Transform>().Rotate(new Vector3(0, -rotSpeed, 0) * Time.deltaTime);
             }
         }
     }
@@ -169,16 +194,19 @@ public class Pot : MonoBehaviour
     public void CreateClimbPivot(Vector3 spawnLoc)
     {
         // Spawn Climb Pivot
-        GameObject climbPivot = Instantiate(climbPivotPrefab);
+        climbPivot = Instantiate(climbPivotPrefab);
         climbPivot.transform.position = spawnLoc;
 
         // Set Climb Parent as pivot
         gameObject.transform.SetParent(climbPivot.transform);
+        Destroy(gameObject.GetComponent<Rigidbody>());
     }
 
     public void DestroyClimbPivot()
     {
         gameObject.transform.SetParent(null);
+        rb = gameObject.AddComponent<Rigidbody>();
+
         Destroy(climbPivot);
     }
 
@@ -265,6 +293,8 @@ public class Pot : MonoBehaviour
                 // #endif
             }
         }
+
+        Debug.Log($"Grab points {Time.time}", gameObject);
     }
 
     #endregion
