@@ -50,11 +50,11 @@ public class GrabPoint : Child
 
             OnGrabPointEventArgs args = new OnGrabPointEventArgs();
             args.grabPoint = gameObject.GetComponent<GrabPoint>();
-
-            Debug.Log($"{args.grabPoint.gameObject.name} can grab");
             onGrabby(args);
 
-
+            #if UNITY_EDITOR
+            Debug.Log($"{args.grabPoint.gameObject.name} can grab");
+            #endif
         }
     }
 
@@ -69,7 +69,9 @@ public class GrabPoint : Child
         args.grabPoint = gameObject.GetComponent<GrabPoint>();
         onNotGrabby(args);
 
+        #if UNITY_EDITOR
         Debug.Log($"{gameObject.name} cannot grab");
+        #endif
     }
 
 }
