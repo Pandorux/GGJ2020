@@ -47,6 +47,14 @@ public class GrabPoint : Child
         if(other.tag == "Climbable")
         {
             canGrab = true;
+
+            OnGrabPointEventArgs args = new OnGrabPointEventArgs();
+            args.grabPoint = gameObject.GetComponent<GrabPoint>();
+
+            Debug.Log($"{args.grabPoint.gameObject.name} can grab");
+            onGrabby(args);
+
+
         }
     }
 
@@ -56,6 +64,12 @@ public class GrabPoint : Child
         {
             canGrab = false;
         }
+
+        OnGrabPointEventArgs args = new OnGrabPointEventArgs();
+        args.grabPoint = gameObject.GetComponent<GrabPoint>();
+        onNotGrabby(args);
+
+        Debug.Log($"{gameObject.name} cannot grab");
     }
 
 }

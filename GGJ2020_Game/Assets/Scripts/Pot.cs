@@ -8,7 +8,19 @@ public class Pot : MonoBehaviour
     private List<Piece> pieces;
     
     public bool isClimbing;
-    public bool canClimb;
+    public bool canClimb
+    {
+        get
+        {
+            for(int i = 0; i < pieces.Count; i++)
+            {
+                if(pieces[i].hasClimbyGrabPoints)
+                    return true;
+            }
+
+            return false;
+        }
+    }
 
     /// <summary>
     /// Start is called on the frame when a script is enabled just before
@@ -50,6 +62,7 @@ public class Pot : MonoBehaviour
     /// </summary>
     void Update()
     {
+        // Tests Snapping Functionality 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             AddPiece(testPiece00);
@@ -65,6 +78,15 @@ public class Pot : MonoBehaviour
             AddPiece(testPiece02);
             testPiece02.gameObject.SetActive(true);
         }   
+
+        // Tests if Climbable Objects can be detected
+        else if (Input.GetKeyDown(KeyCode.C))
+        {
+            if(canClimb)
+                Debug.Log($"{gameObject.name} can climb!!");
+            else
+                Debug.LogError($"{gameObject.name} cannot climb!!");
+        }
     }
 
     #endregion
