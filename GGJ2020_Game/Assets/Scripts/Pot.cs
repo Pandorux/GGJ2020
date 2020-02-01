@@ -7,12 +7,14 @@ public class Pot : MonoBehaviour
 
     public float speed = 5;
     public bool canPickUp = false;
-
+    public GameObject climbPivotPrefab;
+    private GameObject climbPivot;
     private Rigidbody rb;
     private int goldCount;
 
     public PieceEnum pieceNumber;
 
+    [SerializeField]
     private List<Piece> pieces = new List<Piece>();
 
     public GrabPoint rightGrabPoint;
@@ -31,6 +33,22 @@ public class Pot : MonoBehaviour
             return false;
         }
 
+    }
+
+    public int getNumberOfGrabbingPoints
+    {
+        get 
+        {
+            int i = 0;
+
+            if(rightGrabPoint.isGrabbing)
+                i++;
+
+            if(leftGrabPoint.isGrabbing)
+                i++;
+
+            return i;
+        }
     }
 
     public bool isOnGround
@@ -65,27 +83,36 @@ public class Pot : MonoBehaviour
         DeactivateUnusedGrabPoints(); 
     }
 
+    #region Movement
+
     // Update is called once per frame
     void Update()
     {
+        // WASD
         if (isOnGround)
         {
             GroundMovement();
         }
-        else if (canClimb)
+        
+        // Wall Swivel Movement
+        if(isClimbing)
+        {
+            ClimbMovement();
+        }
+
+        // Mouse0 and Mouse1 Wall Grabbing
+        if (isClimbing || canClimb)
         {
             if (Input.GetKeyDown(KeyCode.Mouse0) && rightGrabPoint.canGrab)
             {
                 rightGrabPoint.isGrabbing = !rightGrabPoint.isGrabbing;
-
-                // Shenanigans with right grab point
+                GrabWall();
             }
 
             if (Input.GetKeyDown(KeyCode.Mouse1) && leftGrabPoint.canGrab)
             {
                 leftGrabPoint.isGrabbing = !leftGrabPoint.isGrabbing;
-
-                // Shenanigans with left grab point
+                GrabWall();
             }
 
             isClimbing = rightGrabPoint.isGrabbing || leftGrabPoint.isGrabbing ?
@@ -102,6 +129,62 @@ public class Pot : MonoBehaviour
 
         rb.AddForce(movement * speed);
     }
+
+    protected void GrabWall()
+    {
+        if(getNumberOfGrabbingPoints == 2)
+        {
+            DestroyClimbPivot();
+            rb.constraints = RigidbodyConstraints.FreezeAll;
+        }
+        else if(getNumberOfGrabbingPoints == 1)
+        {
+            CreateClimbPivot();
+            rb.constraints = RigidbodyConstraints.None;
+        }
+        else if(getNumberOfGrabbingPoints == 0)
+        {
+            DestroyClimbPivot();
+            rb.constraints = RigidbodyConstraints.None;
+        }
+    }
+
+    protected void ClimbMovement()
+    {
+        if(climbPivot != null)
+        {
+            if(Input.GetKeyDown(KeyCode.A));
+            {
+                climbPivot.GetComponent<RigidBody>().AddTorque(-Vector3.forward, ForceMode.Force);
+            }
+
+            if(Input.GetKeyDown(KeyCode.D));
+            {
+                climbPivot.GetComponent<RigidBody>().AddTorque(Vector3.forward, ForceMode.Force);
+            }
+        }
+    }
+
+    
+    public void CreateClimbPivot(Vector3 spawnLoc)
+    {
+        // Spawn Climb Pivot
+        GameObject climbPivot = Instantiate(climbPivotPrefab);
+        climbPivot.transform.position = spawnLoc;
+
+        // Set Climb Parent as pivot
+        gameObject.transform.SetParent(climbPivot.transform);
+    }
+
+    public void DestroyClimbPivot()
+    {
+        gameObject.transform.SetParent(null);
+        Destroy(climbPivot);
+    }
+
+    #endregion
+
+    #region Broken Pieces & Grab Points
 
     public void AddPiece(Piece newPiece)
     {
@@ -120,59 +203,7 @@ public class Pot : MonoBehaviour
         DeactivateUnusedGrabPoints(); 
     }
 
-    public void GetGrabPointExtents(ref GrabPoint grabPoint00, ref GrabPoint grabPoint01)
-    {
-        List<GrabPoint> grabPoints = GetAllGrabPoints();
-        float longestDistance = 0.0f;
-
-        for(int i = 0; i < grabPoints.Count; i++)
-        {
-            for(int j = i + 1; j < grabPoints.Count; j++)
-            {
-                Vector3 a = grabPoints[i].gameObject.transform.position;
-                Vector3 b = grabPoints[j].gameObject.transform.position;
-
-                float distance = Vector3.Distance(a, b);
-
-                if(distance > longestDistance)
-                {
-                    longestDistance = distance;
-
-                    grabPoint00 = grabPoints[i];
-                    grabPoint01 = grabPoints[j];
-                }
-
-                #if UNITY_EDITOR
-                    Debug.Log($"Compared {grabPoints[i].gameObject.name} and {grabPoints[j].gameObject.name}");
-                #endif
-            }
-        }
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-
-        if (other.gameObject.CompareTag("Gold")) // **GOLD** when you hit gold, they deactivate and add 1 to your count
-        {
-            other.gameObject.SetActive(false);
-            goldCount = goldCount + 1;
-
-
-        }
-
-        // check if you can pick up (is goldCount = 3?)
-        if (goldCount == 3)
-        {
-            //other.gameObject.SetActive(false); //deactivate piece on the floor
-            canPickUp = true;
-
-        }
-
-        //if (other.gameObject.CompareTag("Piece") & canPickUp = true) //AND canPickUp = true         // **PIECES** if the piece you hit is a Piece, check if you can pick up, they deactivate and you reactivate a piece to bowl
-        //{
-        //    AddPiece(other.g)
-        //}
-    }
+    
 
     // TODO:  Potential cause of poor performance
     /// <summary>
@@ -207,7 +238,64 @@ public class Pot : MonoBehaviour
         return grabPoints;
     }
 
-    //#region Testing
+    public void GetGrabPointExtents(ref GrabPoint grabPoint00, ref GrabPoint grabPoint01)
+    {
+        List<GrabPoint> grabPoints = GetAllGrabPoints();
+        float longestDistance = 0.0f;
+
+        for(int i = 0; i < grabPoints.Count; i++)
+        {
+            for(int j = i + 1; j < grabPoints.Count; j++)
+            {
+                Vector3 a = grabPoints[i].gameObject.transform.position;
+                Vector3 b = grabPoints[j].gameObject.transform.position;
+
+                float distance = Vector3.Distance(a, b);
+
+                if(distance > longestDistance)
+                {
+                    longestDistance = distance;
+
+                    grabPoint00 = grabPoints[i];
+                    grabPoint01 = grabPoints[j];
+                }
+
+                // #if UNITY_EDITOR
+                //     Debug.Log($"Compared {grabPoints[i].gameObject.name} and {grabPoints[j].gameObject.name}");
+                // #endif
+            }
+        }
+    }
+
+    #endregion
+
+    void OnTriggerEnter(Collider other)
+    {
+
+        if (other.gameObject.CompareTag("Gold")) // **GOLD** when you hit gold, they deactivate and add 1 to your count
+        {
+            other.gameObject.SetActive(false);
+            goldCount = goldCount + 1;
+
+
+        }
+
+        // check if you can pick up (is goldCount = 3?)
+        if (goldCount == 3)
+        {
+            //other.gameObject.SetActive(false); //deactivate piece on the floor
+            canPickUp = true;
+
+        }
+
+        //if (other.gameObject.CompareTag("Piece") & canPickUp = true) //AND canPickUp = true         // **PIECES** if the piece you hit is a Piece, check if you can pick up, they deactivate and you reactivate a piece to bowl
+        //{
+        //    AddPiece(other.g)
+        //}
+    }
+
+
+    #region Testing
 
     //[Header("Testing Variables")]
 
@@ -258,6 +346,6 @@ public class Pot : MonoBehaviour
     //    #endif
     //}
 
-    //#endregion
+    #endregion
 
 }
