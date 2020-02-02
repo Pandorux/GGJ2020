@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Pot : MonoBehaviour
 {
-
     public float speed = 5;
     public float rotSpeed = 5;
     public bool canPickUp = false;
@@ -67,6 +66,15 @@ public class Pot : MonoBehaviour
         }
     }
 
+    #region Test Variables
+
+    [Header("Testing Variables")]
+    public Piece testPiece00;
+    public Piece testPiece01;
+    public Piece testPiece02;
+
+    #endregion
+
     /// <summary>
     /// Start is called on the frame when a script is enabled just before
     /// any of the Update methods is called the first time.
@@ -122,6 +130,62 @@ public class Pot : MonoBehaviour
             isClimbing = rightGrabPoint.isGrabbing || leftGrabPoint.isGrabbing ?
                 true : false;
         }
+
+        #region Testing 
+
+            #if UNITY_EDITOR
+                // Tests Snapping Functionality 
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    AddPiece(testPiece00);
+                    testPiece00.gameObject.SetActive(true);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    AddPiece(testPiece01);
+                    testPiece01.gameObject.SetActive(true);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    AddPiece(testPiece02);
+                    testPiece02.gameObject.SetActive(true);
+                }   
+
+                // Tests if Climbable Objects can be detected
+                else if (Input.GetKeyDown(KeyCode.C))
+                {
+                    if(canClimb)
+                        Debug.Log($"{gameObject.name} can climb!!");
+                    else
+                        Debug.LogError($"{gameObject.name} cannot climb!!");
+                }
+
+                    // Lists GPs being checked, and the final 2 chosen
+                else if (Input.GetKeyDown(KeyCode.G))
+                {
+                    GrabPoint gp1 = new GrabPoint();
+                    GrabPoint gp2 = new GrabPoint();
+                    GetGrabPointExtents(ref gp1, ref gp2);
+
+                    Debug.Log($"The extents are {gp1.gameObject.name} and {gp2.gameObject.name}");
+                }
+
+                // HULK SMASH
+                else if (Input.GetKeyDown(KeyCode.B))
+                {
+                    BreakPot();
+                }
+
+                // Pick up hacks
+                else if (Input.GetKeyDown(KeyCode.P))
+                {
+                    goldCount = 3;
+                    canPickUp = true;
+                }
+
+            #endif
+
+        #endregion
     }
 
     protected void GroundMovement()
@@ -309,6 +373,14 @@ public class Pot : MonoBehaviour
         Debug.Log($"Grab points {Time.time}", gameObject);
     }
 
+    public void BreakPot()
+    {
+        for(int i = 1; i < pieces.Count; i++)
+        {
+            pieces[i].SpawnBrokenPiece();
+        }
+    }
+
     #endregion
 
     void OnTriggerEnter(Collider other)
@@ -333,62 +405,8 @@ public class Pot : MonoBehaviour
             canPickUp = false;
             goldCount = 0;
             ActivatePiece(other.gameObject.GetComponent<PieceIdentifier>().pieceNumber);
-            other.gameObject.SetActive(false);
+            Destroy(other.gameObject);
         }
     }
-
-
-    #region Testing
-
-    //[Header("Testing Variables")]
-
-    //public Piece testPiece00;
-    //public Piece testPiece01;
-    //public Piece testPiece02;
-
-    ///// <summary>
-    ///// Update is called every frame, if the MonoBehaviour is enabled.
-    ///// </summary>
-    //void Update()
-    //{
-    //    #if UNITY_EDITOR
-    //        // Tests Snapping Functionality 
-    //        if (Input.GetKeyDown(KeyCode.Alpha1))
-    //        {
-    //            AddPiece(testPiece00);
-    //            testPiece00.gameObject.SetActive(true);
-    //        }
-    //        else if (Input.GetKeyDown(KeyCode.Alpha2))
-    //        {
-    //            AddPiece(testPiece01);
-    //            testPiece01.gameObject.SetActive(true);
-    //        }
-    //        else if (Input.GetKeyDown(KeyCode.Alpha3))
-    //        {
-    //            AddPiece(testPiece02);
-    //            testPiece02.gameObject.SetActive(true);
-    //        }   
-
-    //        // Tests if Climbable Objects can be detected
-    //        else if (Input.GetKeyDown(KeyCode.C))
-    //        {
-    //            if(canClimb)
-    //                Debug.Log($"{gameObject.name} can climb!!");
-    //            else
-    //                Debug.LogError($"{gameObject.name} cannot climb!!");
-    //        }
-
-    //        else if (Input.GetKeyDown(KeyCode.G))
-    //        {
-    //            GrabPoint gp1 = new GrabPoint();
-    //            GrabPoint gp2 = new GrabPoint();
-    //            GetGrabPointExtents(ref gp1, ref gp2);
-
-    //            Debug.Log($"The extents are {gp1.gameObject.name} and {gp2.gameObject.name}");
-    //        }
-    //    #endif
-    //}
-
-    #endregion
 
 }

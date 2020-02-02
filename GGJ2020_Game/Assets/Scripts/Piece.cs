@@ -13,7 +13,7 @@ public class Piece : Child
         get;
         private set;
     }
-
+    public GameObject brokenPiece;
     /// <summary>
     /// Start is called on the frame when a script is enabled just before
     /// any of the Update methods is called the first time.
@@ -60,5 +60,15 @@ public class Piece : Child
     public List<GrabPoint> GetGrabPoints()
     {
         return grabPoints;
+    }
+
+    public void SpawnBrokenPiece()
+    {
+        // Deactivate Active Piece
+        gameObject.SetActive(false);
+
+        // Spawn Broken Piece Equivalent in World Space
+        Vector3 worldSpace = transform.TransformPoint(transform.position);
+        Instantiate(brokenPiece, worldSpace, Quaternion.identity);
     }
 }
