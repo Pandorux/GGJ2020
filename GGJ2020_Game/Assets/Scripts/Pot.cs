@@ -6,6 +6,7 @@ public class Pot : MonoBehaviour
 {
     public float speed = 5;
     public float rotSpeed = 5;
+    public float breakTolerance = 1;
     public bool canPickUp = false;
     public GameObject climbPivotPrefab;
     private GameObject climbPivot;
@@ -68,10 +69,10 @@ public class Pot : MonoBehaviour
 
     #region Test Variables
 
-    [Header("Testing Variables")]
-    public Piece testPiece00;
-    public Piece testPiece01;
-    public Piece testPiece02;
+    // [Header("Testing Variables")]
+    // public Piece testPiece00;
+    // public Piece testPiece01;
+    // public Piece testPiece02;
 
     #endregion
 
@@ -133,57 +134,57 @@ public class Pot : MonoBehaviour
 
         #region Testing 
 
-            #if UNITY_EDITOR
-                // Tests Snapping Functionality 
-                if (Input.GetKeyDown(KeyCode.Alpha1))
-                {
-                    AddPiece(testPiece00);
-                    testPiece00.gameObject.SetActive(true);
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha2))
-                {
-                    AddPiece(testPiece01);
-                    testPiece01.gameObject.SetActive(true);
-                }
-                else if (Input.GetKeyDown(KeyCode.Alpha3))
-                {
-                    AddPiece(testPiece02);
-                    testPiece02.gameObject.SetActive(true);
-                }   
+            // #if UNITY_EDITOR
+            //     // Tests Snapping Functionality 
+            //     if (Input.GetKeyDown(KeyCode.Alpha1))
+            //     {
+            //         AddPiece(testPiece00);
+            //         testPiece00.gameObject.SetActive(true);
+            //     }
+            //     else if (Input.GetKeyDown(KeyCode.Alpha2))
+            //     {
+            //         AddPiece(testPiece01);
+            //         testPiece01.gameObject.SetActive(true);
+            //     }
+            //     else if (Input.GetKeyDown(KeyCode.Alpha3))
+            //     {
+            //         AddPiece(testPiece02);
+            //         testPiece02.gameObject.SetActive(true);
+            //     }   
 
-                // Tests if Climbable Objects can be detected
-                else if (Input.GetKeyDown(KeyCode.C))
-                {
-                    if(canClimb)
-                        Debug.Log($"{gameObject.name} can climb!!");
-                    else
-                        Debug.LogError($"{gameObject.name} cannot climb!!");
-                }
+            //     // Tests if Climbable Objects can be detected
+            //     else if (Input.GetKeyDown(KeyCode.C))
+            //     {
+            //         if(canClimb)
+            //             Debug.Log($"{gameObject.name} can climb!!");
+            //         else
+            //             Debug.LogError($"{gameObject.name} cannot climb!!");
+            //     }
 
-                    // Lists GPs being checked, and the final 2 chosen
-                else if (Input.GetKeyDown(KeyCode.G))
-                {
-                    GrabPoint gp1 = new GrabPoint();
-                    GrabPoint gp2 = new GrabPoint();
-                    GetGrabPointExtents(ref gp1, ref gp2);
+            //         // Lists GPs being checked, and the final 2 chosen
+            //     else if (Input.GetKeyDown(KeyCode.G))
+            //     {
+            //         GrabPoint gp1 = new GrabPoint();
+            //         GrabPoint gp2 = new GrabPoint();
+            //         GetGrabPointExtents(ref gp1, ref gp2);
 
-                    Debug.Log($"The extents are {gp1.gameObject.name} and {gp2.gameObject.name}");
-                }
+            //         Debug.Log($"The extents are {gp1.gameObject.name} and {gp2.gameObject.name}");
+            //     }
 
-                // HULK SMASH
-                else if (Input.GetKeyDown(KeyCode.B))
-                {
-                    BreakPot();
-                }
+            //     // HULK SMASH
+            //     else if (Input.GetKeyDown(KeyCode.B))
+            //     {
+            //         BreakPot();
+            //     }
 
-                // Pick up hacks
-                else if (Input.GetKeyDown(KeyCode.P))
-                {
-                    goldCount = 3;
-                    canPickUp = true;
-                }
+            //     // Pick up hacks
+            //     else if (Input.GetKeyDown(KeyCode.P))
+            //     {
+            //         goldCount = 3;
+            //         canPickUp = true;
+            //     }
 
-            #endif
+            // #endif
 
         #endregion
     }
@@ -377,8 +378,14 @@ public class Pot : MonoBehaviour
     {
         for(int i = 1; i < pieces.Count; i++)
         {
-            pieces[i].SpawnBrokenPiece();
+            if(pieces[i].gameObject.active)
+            {
+                pieces[i].SpawnBrokenPiece();
+            }
         }
+
+        GetGrabPointExtents(ref leftGrabPoint, ref rightGrabPoint);
+        DeactivateUnusedGrabPoints(); 
     }
 
     #endregion
@@ -406,6 +413,17 @@ public class Pot : MonoBehaviour
             goldCount = 0;
             ActivatePiece(other.gameObject.GetComponent<PieceIdentifier>().pieceNumber);
             Destroy(other.gameObject);
+        }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag != "SafeLanding")
+        {
+            if (collision.relativeVelocity.y > breakTolerance)
+            {
+                BreakPot();
+            }
         }
     }
 
