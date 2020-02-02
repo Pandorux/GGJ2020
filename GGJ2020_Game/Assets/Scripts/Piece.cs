@@ -7,12 +7,13 @@ public class Piece : Child
     [SerializeField]
     private List<GrabPoint> grabPoints;
     private List<GrabPoint> climbyGrabPoints;
+    public PieceEnum pieceNumber;
     public bool hasClimbyGrabPoints
     {
         get;
         private set;
     }
-
+    public GameObject brokenPiece;
     /// <summary>
     /// Start is called on the frame when a script is enabled just before
     /// any of the Update methods is called the first time.
@@ -38,10 +39,10 @@ public class Piece : Child
         climbyGrabPoints.Add(e.grabPoint);
         hasClimbyGrabPoints = true;
 
-        #if UNITY_EDITOR
-            Debug.Log($"A new grab point can climb!!\n"
-                + $"{gameObject.name} now has {climbyGrabPoints.Count} grab points active.");
-        #endif
+        // #if UNITY_EDITOR
+        //     Debug.Log($"A new grab point can climb!!\n"
+        //         + $"{gameObject.name} now has {climbyGrabPoints.Count} grab points active.");
+        // #endif
     }
 
     protected void RemoveActiveGrabPoint(object sender, OnGrabPointEventArgs e)
@@ -50,11 +51,24 @@ public class Piece : Child
         hasClimbyGrabPoints = climbyGrabPoints.Count > 0 ? 
             true : false;
 
-        #if UNITY_EDITOR
-            Debug.Log($"A grab point can no longer climb!!\n"
-                + $"{gameObject.name} now has {climbyGrabPoints.Count} grab points active.");
-        #endif
+        // #if UNITY_EDITOR
+        //     Debug.Log($"A grab point can no longer climb!!\n"
+        //         + $"{gameObject.name} now has {climbyGrabPoints.Count} grab points active.");
+        // #endif
     }
 
-    
+    public List<GrabPoint> GetGrabPoints()
+    {
+        return grabPoints;
+    }
+
+    public void SpawnBrokenPiece()
+    {
+        // Deactivate Active Piece
+        gameObject.SetActive(false);
+
+        // Spawn Broken Piece Equivalent in World Space
+        Vector3 worldSpace = transform.TransformPoint(transform.localPosition);
+        Instantiate(brokenPiece, worldSpace, transform.rotation);
+    }
 }
