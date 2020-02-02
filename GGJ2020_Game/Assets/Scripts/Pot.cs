@@ -229,6 +229,19 @@ public class Pot : MonoBehaviour
         DeactivateUnusedGrabPoints(); 
     }
 
+    public void ActivatePiece(PieceEnum id)
+    {
+        for(int i = 0; i < pieces.Count; i++)
+        {
+            if((int)pieces[i].pieceNumber == (int)id)
+            {
+                pieces[i].gameObject.SetActive(true);
+            }
+        }
+
+        GetGrabPointExtents(ref leftGrabPoint, ref rightGrabPoint);
+        DeactivateUnusedGrabPoints(); 
+    }
     
 
     // TODO:  Potential cause of poor performance
@@ -305,8 +318,6 @@ public class Pot : MonoBehaviour
         {
             other.gameObject.SetActive(false);
             goldCount = goldCount + 1;
-
-
         }
 
         // check if you can pick up (is goldCount = 3?)
@@ -317,11 +328,13 @@ public class Pot : MonoBehaviour
 
         }
 
-        //if (other.gameObject.CompareTag("Piece") & canPickUp = true) //AND canPickUp = true         // **PIECES** if the piece you hit is a Piece, check if you can pick up, they deactivate and you reactivate a piece to bowl
-        //{
-        // TO DO: reset gold counter, set pickup to false, destroy floor piece, 
-        //    AddPiece(other.g)
-        //}
+        if (other.gameObject.tag == "Piece" && canPickUp == true)         // **PIECES** if the piece you hit is a Piece, check if you can pick up, they deactivate and you reactivate a piece to bowl
+        {
+            canPickUp = false;
+            goldCount = 0;
+            ActivatePiece(other.gameObject.GetComponent<PieceIdentifier>().pieceNumber);
+            other.gameObject.SetActive(false);
+        }
     }
 
 
