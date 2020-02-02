@@ -307,7 +307,7 @@ public class Pot : MonoBehaviour
 
         GetGrabPointExtents(ref leftGrabPoint, ref rightGrabPoint);
         DeactivateUnusedGrabPoints(); 
-        goldManager.ActivateGoldContainer(id);
+        goldManager.ActivateGoldContainer((int)id);
     }
     
 
@@ -388,7 +388,7 @@ public class Pot : MonoBehaviour
 
         GetGrabPointExtents(ref leftGrabPoint, ref rightGrabPoint);
         DeactivateUnusedGrabPoints(); 
-        goldManager.ActivateGoldContainer(PieceEnum.Piece00);
+        goldManager.ActivateGoldContainer((int)PieceEnum.Piece00);
     }
 
     #endregion
