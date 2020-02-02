@@ -6,6 +6,8 @@ using UnityEngine;
 public class GrabPoint : Child
 {
     GameObject pot;
+
+    public bool isGrabbing;
     public bool canGrab
     {
         get;
@@ -52,9 +54,9 @@ public class GrabPoint : Child
             args.grabPoint = gameObject.GetComponent<GrabPoint>();
             onGrabby(args);
 
-            #if UNITY_EDITOR
-            Debug.Log($"{args.grabPoint.gameObject.name} can grab");
-            #endif
+            // #if UNITY_EDITOR
+            // Debug.Log($"{args.grabPoint.gameObject.name} can grab");
+            // #endif
         }
     }
 
@@ -69,9 +71,9 @@ public class GrabPoint : Child
         args.grabPoint = gameObject.GetComponent<GrabPoint>();
         onNotGrabby(args);
 
-        #if UNITY_EDITOR
-        Debug.Log($"{gameObject.name} cannot grab");
-        #endif
+        // #if UNITY_EDITOR
+        // Debug.Log($"{gameObject.name} cannot grab");
+        // #endif
     }
 
 }
