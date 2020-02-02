@@ -38,10 +38,10 @@ public class Piece : Child
         climbyGrabPoints.Add(e.grabPoint);
         hasClimbyGrabPoints = true;
 
-        #if UNITY_EDITOR
-            Debug.Log($"A new grab point can climb!!\n"
-                + $"{gameObject.name} now has {climbyGrabPoints.Count} grab points active.");
-        #endif
+        // #if UNITY_EDITOR
+        //     Debug.Log($"A new grab point can climb!!\n"
+        //         + $"{gameObject.name} now has {climbyGrabPoints.Count} grab points active.");
+        // #endif
     }
 
     protected void RemoveActiveGrabPoint(object sender, OnGrabPointEventArgs e)
@@ -50,10 +50,10 @@ public class Piece : Child
         hasClimbyGrabPoints = climbyGrabPoints.Count > 0 ? 
             true : false;
 
-        #if UNITY_EDITOR
-            Debug.Log($"A grab point can no longer climb!!\n"
-                + $"{gameObject.name} now has {climbyGrabPoints.Count} grab points active.");
-        #endif
+        // #if UNITY_EDITOR
+        //     Debug.Log($"A grab point can no longer climb!!\n"
+        //         + $"{gameObject.name} now has {climbyGrabPoints.Count} grab points active.");
+        // #endif
     }
 
     public List<GrabPoint> GetGrabPoints()
