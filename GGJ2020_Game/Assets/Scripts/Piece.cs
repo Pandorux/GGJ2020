@@ -68,7 +68,7 @@ public class Piece : Child
         gameObject.SetActive(false);
 
         // Spawn Broken Piece Equivalent in World Space
-        Vector3 worldSpace = transform.TransformPoint(transform.position);
-        Instantiate(brokenPiece, worldSpace, Quaternion.identity);
+        Vector3 worldSpace = transform.TransformPoint(transform.localPosition);
+        Instantiate(brokenPiece, worldSpace, transform.rotation);
     }
 }
