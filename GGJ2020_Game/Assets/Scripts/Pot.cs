@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Pot : MonoBehaviour
 {
+    public GoldManager goldManager;
     public float speed = 5;
     public float rotSpeed = 5;
     public float breakTolerance = 1;
@@ -306,6 +307,7 @@ public class Pot : MonoBehaviour
 
         GetGrabPointExtents(ref leftGrabPoint, ref rightGrabPoint);
         DeactivateUnusedGrabPoints(); 
+        goldManager.ActivateGoldContainer(id);
     }
     
 
@@ -386,6 +388,7 @@ public class Pot : MonoBehaviour
 
         GetGrabPointExtents(ref leftGrabPoint, ref rightGrabPoint);
         DeactivateUnusedGrabPoints(); 
+        goldManager.ActivateGoldContainer(PieceEnum.Piece00);
     }
 
     #endregion
@@ -412,7 +415,7 @@ public class Pot : MonoBehaviour
             canPickUp = false;
             goldCount = 0;
             ActivatePiece(other.gameObject.GetComponent<PieceIdentifier>().pieceNumber);
-            Destroy(other.gameObject);
+            other.gameObject.SetActive(false);
         }
     }
 
