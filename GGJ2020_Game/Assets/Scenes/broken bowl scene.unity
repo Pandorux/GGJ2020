@@ -7208,6 +7208,75 @@ PrefabInstance:
     - {fileID: 5256109108057548899, guid: 72c7a88b15847034a871fc2b4b6bafb5, type: 3}
     - {fileID: 5256109108057548897, guid: 72c7a88b15847034a871fc2b4b6bafb5, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 72c7a88b15847034a871fc2b4b6bafb5, type: 3}
+--- !u!1001 &5542746734339224086
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3123253240574606961, guid: e0f765b5273d90e45bd27aba769a4067,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.2807285
+      objectReference: {fileID: 0}
+    - target: {fileID: 3123253240574606961, guid: e0f765b5273d90e45bd27aba769a4067,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -8.231711
+      objectReference: {fileID: 0}
+    - target: {fileID: 3123253240574606961, guid: e0f765b5273d90e45bd27aba769a4067,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 8.575394
+      objectReference: {fileID: 0}
+    - target: {fileID: 3123253240574606961, guid: e0f765b5273d90e45bd27aba769a4067,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3123253240574606961, guid: e0f765b5273d90e45bd27aba769a4067,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3123253240574606961, guid: e0f765b5273d90e45bd27aba769a4067,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3123253240574606961, guid: e0f765b5273d90e45bd27aba769a4067,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3123253240574606961, guid: e0f765b5273d90e45bd27aba769a4067,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 48
+      objectReference: {fileID: 0}
+    - target: {fileID: 3123253240574606961, guid: e0f765b5273d90e45bd27aba769a4067,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3123253240574606961, guid: e0f765b5273d90e45bd27aba769a4067,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3123253240574606961, guid: e0f765b5273d90e45bd27aba769a4067,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7803824799922103550, guid: e0f765b5273d90e45bd27aba769a4067,
+        type: 3}
+      propertyPath: m_Name
+      value: Gold Manager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e0f765b5273d90e45bd27aba769a4067, type: 3}
 --- !u!4 &6567521825244046278
 Transform:
   m_ObjectHideFlags: 0
