@@ -320,6 +320,7 @@ public class Pot : MonoBehaviour
 
         //if (other.gameObject.CompareTag("Piece") & canPickUp = true) //AND canPickUp = true         // **PIECES** if the piece you hit is a Piece, check if you can pick up, they deactivate and you reactivate a piece to bowl
         //{
+        // TO DO: reset gold counter, set pickup to false, destroy floor piece, 
         //    AddPiece(other.g)
         //}
     }
