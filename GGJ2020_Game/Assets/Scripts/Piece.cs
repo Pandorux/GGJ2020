@@ -7,6 +7,7 @@ public class Piece : Child
     [SerializeField]
     private List<GrabPoint> grabPoints;
     private List<GrabPoint> climbyGrabPoints;
+    public PieceEnum pieceNumber;
     public bool hasClimbyGrabPoints
     {
         get;

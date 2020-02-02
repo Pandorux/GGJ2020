@@ -13,8 +13,6 @@ public class Pot : MonoBehaviour
     private Rigidbody rb;
     private int goldCount;
 
-    public PieceEnum pieceNumber;
-
     [SerializeField]
     private List<Piece> pieces = new List<Piece>();
 
@@ -260,7 +258,8 @@ public class Pot : MonoBehaviour
 
         for(int i = 0; i < pieces.Count; i++)
         {
-            grabPoints.AddRange(pieces[i].GetGrabPoints());
+            if(pieces[i].gameObject.active)
+                grabPoints.AddRange(pieces[i].GetGrabPoints());
         }
 
         return grabPoints;
