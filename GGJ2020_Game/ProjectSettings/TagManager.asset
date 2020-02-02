@@ -8,6 +8,7 @@ TagManager:
   - Gold
   - Piece
   - SafeLanding
+  - Bowl
   layers:
   - Default
   - TransparentFX

@@ -195,9 +195,15 @@ public class Pot : MonoBehaviour
         float moveHorizontal = Input.GetAxis("Horizontal"); // move n shit
         float moveVertical = Input.GetAxis("Vertical");
 
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+        Transform camTrans = Camera.main.transform;
+        Vector3 camFwd = camTrans.right.normalized;
+        Vector3 camRight = camTrans.forward.normalized;
+        camFwd.y = 0;
+        camRight.y = 0;
 
-        rb.AddForce(movement * speed);
+        Vector3 movement = camFwd * moveHorizontal + camRight * moveVertical;
+
+        rb.AddForce((movement) * speed);
     }
 
     protected void GrabWall()
